@@ -1,95 +1,441 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hipertrofia Coach PRO</title>
-<style>
-body{font-family:Arial;background:#0f172a;color:white;padding:15px}
-.card{background:#111827;padding:15px;border-radius:10px;margin-bottom:10px}
-input,select{padding:8px;margin:5px;border-radius:5px;border:none}
-button{padding:10px;margin:5px;border:none;border-radius:5px;cursor:pointer}
-.green{background:#22c55e;color:white}
-.blue{background:#3b82f6;color:white}
-.yellow{background:#facc15;color:black}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hipertrofia Coach Final</title>
+  <style>
+    :root{
+      --bg:#020617; --panel:#0f172a; --panel2:#111827; --line:#334155;
+      --text:#f8fafc; --muted:#94a3b8; --green:#22c55e; --blue:#38bdf8;
+      --yellow:#facc15; --red:#ef4444; --orange:#fb923c; --purple:#a78bfa;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(145deg,#020617,#0f172a);color:var(--text);padding:14px}
+    .app{max-width:1100px;margin:auto}
+    h1{text-align:center;margin:8px 0 4px;font-size:30px}
+    .sub{text-align:center;color:var(--muted);margin-bottom:18px}
+    .grid{display:grid;gap:12px}
+    .top{grid-template-columns:1fr 1fr 1fr}
+    .card,.coach-panel,.timer{background:rgba(15,23,42,.96);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 12px 28px rgba(0,0,0,.28)}
+    select,input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--line);background:#020617;color:var(--text);font-size:15px}
+    button{border:0;border-radius:14px;padding:12px 14px;color:white;font-weight:700;cursor:pointer;font-size:14px}
+    .green{background:#16a34a}.blue{background:#0284c7}.gray{background:#334155}.red{background:#dc2626}.purple{background:#7c3aed}.orange{background:#ea580c}
+    .timer{position:sticky;top:10px;z-index:5}
+    .timer-main{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .time{font-size:34px;font-weight:900;color:var(--yellow);letter-spacing:1px}
+    .timer-buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+    .mini{background:#020617;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+    .mini strong{display:block;font-size:20px;color:var(--blue)}
+    .exercise-title{font-size:20px;font-weight:900;margin-bottom:5px}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:10px}
+    .target{background:#020617;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px;color:#e2e8f0}
+    .sets{display:grid;grid-template-columns:80px 1fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:8px}
+    .set-label{color:var(--muted);font-weight:700}
+    .actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+    .coach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .coach-card,.coach-box{background:#020617;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .coach-card strong{display:block;margin-bottom:5px}
+    .coach-text{color:#cbd5e1;font-size:14px;line-height:1.35}
+    .status-up{border-color:rgba(34,197,94,.65);background:rgba(34,197,94,.08)}
+    .status-hold{border-color:rgba(250,204,21,.65);background:rgba(250,204,21,.08)}
+    .status-repeat{border-color:rgba(251,146,60,.65);background:rgba(251,146,60,.08)}
+    .status-down{border-color:rgba(239,68,68,.65);background:rgba(239,68,68,.08)}
+    .status-new{border-color:rgba(56,189,248,.65);background:rgba(56,189,248,.08)}
+    .history-row{display:grid;grid-template-columns:1.1fr 1.2fr .7fr .7fr;gap:8px;padding:5px 0;border-bottom:1px solid rgba(148,163,184,.14);color:var(--muted);font-size:14px}
+    .history-head{font-weight:800;color:#bbf7d0;margin-bottom:8px}
+    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1e293b;color:#cbd5e1;font-size:12px;margin-right:6px}
+    @media(max-width:800px){
+      .top,.summary,.actions,.coach-grid{grid-template-columns:1fr}
+      .sets{grid-template-columns:1fr}
+      .history-row{grid-template-columns:1fr}
+      h1{font-size:25px}.time{font-size:30px}
+    }
+  </style>
 </head>
 <body>
+<div class="app">
+  <h1>🏋️ Hipertrofia Coach Final</h1>
+  <p class="sub">Plan 8 semanas + RIR objetivo + coach inteligente + historial + descanso</p>
 
-<h1>Hipertrofia Coach PRO</h1>
+  <div class="timer">
+    <div class="timer-main">
+      <div>
+        <span class="badge">Descanso</span>
+        <div class="time" id="timerDisplay">00:00</div>
+      </div>
+      <div class="timer-buttons">
+        <button class="blue" onclick="startTimer(60)">1:00</button>
+        <button class="blue" onclick="startTimer(90)">1:30</button>
+        <button class="blue" onclick="startTimer(120)">2:00</button>
+        <button class="purple" onclick="startTimer(180)">3:00</button>
+        <button class="gray" onclick="stopTimer()">Parar</button>
+      </div>
+    </div>
+  </div>
 
-<label>Semana:</label>
-<select id="week">
-</select>
+  <div class="grid top">
+    <select id="weekSelect"></select>
+    <select id="daySelect"></select>
+    <input id="dateInput" type="date">
+  </div>
 
-<label>Día:</label>
-<select id="day">
-  <option>Lunes</option>
-  <option>Martes</option>
-  <option>Miércoles</option>
-  <option>Jueves</option>
-  <option>Viernes</option>
-</select>
+  <div class="card">
+    <strong id="phaseTitle">Fase</strong>
+    <div class="meta" id="phaseDescription"></div>
+  </div>
 
-<div id="info"></div>
-<div id="exercises"></div>
+  <div class="summary">
+    <div class="mini"><span>Semana</span><strong id="sumWeek">1</strong></div>
+    <div class="mini"><span>Ejercicios</span><strong id="sumExercises">0</strong></div>
+    <div class="mini"><span>Series registradas</span><strong id="sumSets">0</strong></div>
+    <div class="mini"><span>Volumen aprox.</span><strong id="sumVolume">0 kg</strong></div>
+  </div>
+
+  <div class="coach-panel">
+    <h2 style="margin:0 0 10px">🧠 Coach del día</h2>
+    <div id="dailyCoach" class="coach-grid"></div>
+  </div>
+
+  <div id="exerciseContainer"></div>
+
+  <div class="actions">
+    <button class="green" onclick="saveWorkout()">Guardar</button>
+    <button class="blue" onclick="exportCSV()">Exportar CSV</button>
+    <button class="gray" onclick="loadLastWorkout()">Cargar último</button>
+    <button class="red" onclick="clearHistory()">Borrar historial</button>
+  </div>
+
+  <h2>Historial</h2>
+  <div id="historyContainer"></div>
+</div>
 
 <script>
-const weekSelect = document.getElementById("week");
-for(let i=1;i<=8;i++){
-  weekSelect.innerHTML += `<option value="${i}">Semana ${i}</option>`;
-}
+const blockStartKey = "hipertrofiaBlockStartDate";
+const coachKey = "historialHipertrofiaCoachFinal";
 
-const plan = {
-  "Lunes":["Press banca","Press inclinado"],
-  "Martes":["Sentadilla","Prensa"],
-  "Miércoles":["Dominadas","Remo"],
-  "Jueves":["Press máquina","Jalón"],
-  "Viernes":["RDL","Hip thrust"]
+const routine = {
+  "Lunes - Push": [
+    {name:"Press banca", setsBase:4, rest:120, goal:"Fuerza base / progresión", type:"compound", main:true},
+    {name:"Press inclinado", setsBase:3, rest:90, goal:"Hipertrofia pecho superior", type:"compound"},
+    {name:"Elevaciones laterales", setsBase:4, rest:60, goal:"Deltoide medio", type:"isolation"},
+    {name:"Fondos", setsBase:3, rest:90, goal:"Pecho/tríceps", type:"compound"},
+    {name:"Extensión tríceps polea", setsBase:3, rest:60, goal:"Tríceps directo", type:"isolation"}
+  ],
+  "Martes - Cuádriceps + Abdomen": [
+    {name:"Sentadilla", setsBase:4, rest:120, goal:"Cuádriceps / tensión mecánica", type:"compound", main:true},
+    {name:"Prensa", setsBase:3, rest:90, goal:"Cuádriceps volumen", type:"compound"},
+    {name:"Zancadas", setsBase:3, rest:90, goal:"Unilateral", type:"compound"},
+    {name:"Extensión cuádriceps", setsBase:3, rest:60, goal:"Aislamiento", type:"isolation"},
+    {name:"Gemelos", setsBase:4, rest:60, goal:"Pantorrilla", type:"isolation"},
+    {name:"Cable crunch", setsBase:3, rest:60, goal:"Abdomen con carga", type:"core"},
+    {name:"Dead bug", setsBase:2, rest:45, goal:"Core estabilidad", type:"core"}
+  ],
+  "Miércoles - Pull": [
+    {name:"Dominadas/Jalón", setsBase:4, rest:120, goal:"Espalda ancho", type:"compound", main:true},
+    {name:"Remo", setsBase:4, rest:90, goal:"Espalda grosor", type:"compound", main:true},
+    {name:"Face pull", setsBase:3, rest:60, goal:"Deltoide posterior/salud", type:"isolation"},
+    {name:"Curl inclinado", setsBase:3, rest:60, goal:"Bíceps directo", type:"isolation"}
+  ],
+  "Jueves - Torso + Abdomen": [
+    {name:"Press máquina", setsBase:3, rest:75, goal:"Pecho volumen", type:"compound"},
+    {name:"Jalón", setsBase:3, rest:75, goal:"Dorsal", type:"compound"},
+    {name:"Remo polea", setsBase:3, rest:75, goal:"Espalda media", type:"compound"},
+    {name:"Elevaciones laterales", setsBase:4, rest:60, goal:"Deltoide medio", type:"isolation"},
+    {name:"Curl + tríceps", setsBase:3, rest:60, goal:"Superset brazos", type:"isolation"},
+    {name:"Elevaciones piernas", setsBase:3, rest:60, goal:"Abdomen inferior", type:"core"},
+    {name:"Crunch máquina", setsBase:3, rest:60, goal:"Abdomen con carga", type:"core"},
+    {name:"Plancha", setsBase:2, rest:45, goal:"Core", type:"core", timed:true}
+  ],
+  "Viernes - Femoral/Glúteo": [
+    {name:"RDL", setsBase:4, rest:120, goal:"Femoral / bisagra", type:"compound", main:true},
+    {name:"Hip thrust", setsBase:4, rest:90, goal:"Glúteo", type:"compound", main:true},
+    {name:"Curl femoral", setsBase:3, rest:60, goal:"Femoral aislamiento", type:"isolation"},
+    {name:"Búlgara", setsBase:3, rest:90, goal:"Unilateral glúteo/pierna", type:"compound"}
+  ]
 };
 
-function getTargets(week){
-  if(week<=2) return {rir:3, reps:"8-10"};
-  if(week<=5) return {rir:"1-2", reps:"6-8"};
-  if(week<=7) return {rir:1, reps:"5-6"};
-  return {rir:"3-4", reps:"8"};
+function planForWeek(week, ex){
+  const isMain = ex.main;
+  let phase, desc, reps, rir, sets = ex.setsBase;
+
+  if(week <= 2){
+    phase = "Acumulación técnica";
+    desc = "Construye técnica, deja margen y prepara progresión.";
+    reps = ex.timed ? "30-45 seg" : (isMain ? "8" : (ex.type==="isolation" || ex.type==="core" ? "12-15" : "10-12"));
+    rir = week === 1 ? "3" : "2";
+  } else if(week <= 5){
+    phase = "Progresión";
+    desc = "Busca más carga o más reps sin romper técnica.";
+    reps = ex.timed ? "30-45 seg" : (isMain ? "6-7" : (ex.type==="isolation" || ex.type==="core" ? "10-15" : "8-10"));
+    rir = week === 3 ? "2" : "1-2";
+  } else if(week <= 7){
+    phase = "Intensificación";
+    desc = "Carga alta, pocas reps y control estricto de fatiga.";
+    reps = ex.timed ? "30-45 seg" : (isMain ? "5-6" : (ex.type==="isolation" || ex.type==="core" ? "10-12" : "6-8"));
+    rir = "1";
+    if(!isMain && ex.type !== "isolation") sets = Math.max(3, ex.setsBase);
+  } else {
+    phase = "Deload";
+    desc = "Baja fatiga. Mantén movimiento, técnica y recuperación.";
+    reps = ex.timed ? "30 seg" : (isMain ? "8" : "12-15");
+    rir = "3-4";
+    sets = Math.max(2, ex.setsBase - 1);
+  }
+
+  return {phase, desc, sets, reps, rir};
 }
 
-function render(){
-  const week = parseInt(weekSelect.value);
-  const day = document.getElementById("day").value;
-  const target = getTargets(week);
+const weekSelect=document.getElementById("weekSelect"), daySelect=document.getElementById("daySelect"), dateInput=document.getElementById("dateInput"), exerciseContainer=document.getElementById("exerciseContainer"), historyContainer=document.getElementById("historyContainer");
+let timerInterval=null, remaining=0;
 
-  document.getElementById("info").innerHTML = `
-    <div class="card">
-      <strong>Semana ${week}</strong><br>
-      Objetivo Reps: ${target.reps}<br>
-      Objetivo RIR: ${target.rir}
-    </div>
-  `;
-
-  let html="";
-  plan[day].forEach(ex=>{
-    html += `
-    <div class="card">
-      <strong>${ex}</strong><br>
-      Peso: <input><br>
-      Reps: <input><br>
-      RIR: <input><br>
-      <button class="blue">Iniciar descanso</button>
-    </div>`;
+function todayISO(){return new Date().toISOString().split("T")[0]}
+function dateDiffWeeks(startISO){
+  const start = new Date(startISO+"T00:00:00");
+  const now = new Date();
+  return Math.floor((now-start)/(1000*60*60*24*7))+1;
+}
+function initBlockStart(){
+  if(!localStorage.getItem(blockStartKey)){
+    localStorage.setItem(blockStartKey, todayISO());
+  }
+}
+function autoWeek(){
+  initBlockStart();
+  const w = dateDiffWeeks(localStorage.getItem(blockStartKey));
+  return Math.min(8, Math.max(1, w));
+}
+function loadSelectors(){
+  for(let i=1;i<=8;i++){
+    let o=document.createElement("option");
+    o.value=i; o.textContent="Semana "+i;
+    weekSelect.appendChild(o);
+  }
+  Object.keys(routine).forEach(day=>{
+    let o=document.createElement("option");
+    o.value=day; o.textContent=day;
+    daySelect.appendChild(o);
   });
-
-  document.getElementById("exercises").innerHTML = html;
+  weekSelect.value = autoWeek();
+}
+function getHistory(){return JSON.parse(localStorage.getItem(coachKey)||"[]")}
+function setHistory(h){localStorage.setItem(coachKey,JSON.stringify(h))}
+function legacyMigrate(){
+  const old = JSON.parse(localStorage.getItem("historialHipertrofiaCoach")||"[]");
+  if(getHistory().length===0 && old.length>0){setHistory(old)}
 }
 
-weekSelect.value = 1;
-render();
+function avg(nums){const clean=nums.filter(n=>!isNaN(n));return clean.length?clean.reduce((a,b)=>a+b,0)/clean.length:0}
+function totalVolume(ex){return ex.series.reduce((a,s)=>a+((parseFloat(s.peso)||0)*(parseFloat(s.reps)||0)),0)}
+function avgReps(ex){return avg(ex.series.map(s=>parseFloat(s.reps)))}
+function avgRir(ex){return avg(ex.series.map(s=>parseFloat(s.rir)).filter(n=>!isNaN(n)))}
+function topWeight(ex){return Math.max(...ex.series.map(s=>parseFloat(s.peso)||0),0)}
+function weightJump(type,current){
+  if(type==="isolation" || type==="core") return current < 30 ? 1 : 2.5;
+  if(current < 50) return 2.5;
+  if(current < 120) return 2.5;
+  return 5;
+}
+function parseRepTop(repStr){
+  const nums = String(repStr).match(/\d+/g);
+  return nums ? Math.max(...nums.map(Number)) : 0;
+}
+function parseRepMin(repStr){
+  const nums = String(repStr).match(/\d+/g);
+  return nums ? Math.min(...nums.map(Number)) : 0;
+}
+function getExerciseHistory(day, exerciseName){
+  return getHistory()
+    .filter(w=>w.dia===day)
+    .map(w=>({fecha:w.fecha, data:w.ejercicios.find(e=>e.ejercicio===exerciseName)}))
+    .filter(x=>x.data)
+    .slice(0,3);
+}
 
-document.getElementById("day").onchange = render;
-weekSelect.onchange = render;
+function coachDecision(day, exConfig){
+  const week = parseInt(weekSelect.value);
+  const target = planForWeek(week, exConfig);
+  const hist=getExerciseHistory(day, exConfig.name);
+  const repTop=parseRepTop(target.reps);
+  const repMin=parseRepMin(target.reps);
+  if(hist.length===0){
+    return {status:"new", icon:"🔵", title:"Primer registro", text:`Objetivo de hoy: ${target.sets} series x ${target.reps}, RIR ${target.rir}. Registra datos reales para que el coach empiece a decidir.`, suggestion:"Crear base"};
+  }
+  const last=hist[0].data, prev=hist[1]?.data;
+  const lastAvgReps=avgReps(last), lastAvgRir=avgRir(last), lastWeight=topWeight(last), lastVol=totalVolume(last);
+  const prevAvgReps=prev?avgReps(prev):0, prevWeight=prev?topWeight(prev):0, prevVol=prev?totalVolume(prev):0;
+  const jump=weightJump(exConfig.type,lastWeight);
+  const hitTop=repTop ? lastAvgReps >= repTop : false;
+  const aboveMin=repMin ? lastAvgReps >= repMin : true;
+  const easy=lastAvgRir >= 2;
+  const tooHard=lastAvgRir > 0 && lastAvgRir < 0.8;
+  const improved = !prev || lastVol > prevVol || lastAvgReps > prevAvgReps || lastWeight > prevWeight;
+  const stalled = prev && !improved;
 
+  if(week===8){
+    return {status:"hold", icon:"🟡", title:"Deload", text:`Semana 8: reduce fatiga. Usa menos carga, mantén técnica y evita fallo. Objetivo: RIR ${target.rir}.`, suggestion:"Baja 10-20%"};
+  }
+  if(hitTop && easy){
+    return {status:"up", icon:"🟢", title:"Sube peso", text:`Cumpliste el rango alto con margen. Próxima sesión prueba ${lastWeight + jump} kg.`, suggestion:`${lastWeight + jump} kg`};
+  }
+  if(hitTop && lastAvgRir >= 1){
+    return {status:"up", icon:"🟢", title:"Subida moderada", text:`Cumpliste el objetivo del plan. Sube +${jump} kg si la técnica fue limpia.`, suggestion:`${lastWeight + jump} kg`};
+  }
+  if(aboveMin && lastAvgRir >= 1 && improved){
+    return {status:"hold", icon:"🟡", title:"Mantén y consolida", text:`Vas progresando. Mantén ${lastWeight} kg e intenta sumar 1 rep total dentro del rango ${target.reps}.`, suggestion:`${lastWeight} kg`};
+  }
+  if(aboveMin && stalled){
+    return {status:"repeat", icon:"🟠", title:"Repite carga", text:`No hubo mejora clara. Repite ${lastWeight} kg, respeta el descanso y cuida ejecución.`, suggestion:`${lastWeight} kg`};
+  }
+  if(!aboveMin || tooHard){
+    const lower=Math.max(0,lastWeight-jump);
+    return {status:"down", icon:"🔴", title:"Carga/fatiga alta", text:`No cumpliste el rango o el RIR fue muy bajo. Baja a ${lower} kg o repite con mejor descanso.`, suggestion:`${lower} kg`};
+  }
+  return {status:"hold", icon:"🟡", title:"Mantén", text:`Mantén ${lastWeight} kg y busca mejor control o más reps.`, suggestion:`${lastWeight} kg`};
+}
+
+function renderPhase(){
+  const week=parseInt(weekSelect.value);
+  const sample=planForWeek(week,{setsBase:3,type:"compound",main:true});
+  document.getElementById("phaseTitle").textContent=`Semana ${week} · ${sample.phase}`;
+  document.getElementById("phaseDescription").textContent=sample.desc;
+  document.getElementById("sumWeek").textContent=week;
+}
+function renderDailyCoach(){
+  const box=document.getElementById("dailyCoach"); box.innerHTML="";
+  const day=daySelect.value;
+  routine[day].forEach(ex=>{
+    const d=coachDecision(day,ex);
+    const target=planForWeek(parseInt(weekSelect.value),ex);
+    const card=document.createElement("div");
+    card.className=`coach-card status-${d.status}`;
+    card.innerHTML=`<strong>${d.icon} ${ex.name}</strong><div class="coach-text">${d.title}: ${d.text}</div><div class="meta">Plan hoy: ${target.sets} x ${target.reps} · RIR ${target.rir} · Sugerencia: ${d.suggestion}</div>`;
+    box.appendChild(card);
+  });
+}
+function renderExercises(prefill=null){
+  const selectedDay=daySelect.value, week=parseInt(weekSelect.value);
+  exerciseContainer.innerHTML="";
+  routine[selectedDay].forEach(ex=>{
+    const target=planForWeek(week,ex);
+    const decision=coachDecision(selectedDay,ex);
+    const card=document.createElement("div"); card.className="card";
+    let setRows="";
+    for(let i=1;i<=target.sets;i++){
+      const old=prefill?.ejercicios?.find(e=>e.ejercicio===ex.name)?.series?.[i-1] || {};
+      setRows += `
+        <div class="sets">
+          <div class="set-label">Serie ${i}</div>
+          <input type="number" step="0.5" placeholder="Peso kg" data-ex="${ex.name}" data-set="${i}" data-field="peso" value="${old.peso||""}">
+          <input type="number" placeholder="${ex.timed ? 'Segundos' : 'Reps'}" data-ex="${ex.name}" data-set="${i}" data-field="reps" value="${old.reps||""}">
+          <input type="number" step="0.5" placeholder="RIR" data-ex="${ex.name}" data-set="${i}" data-field="rir" value="${old.rir||""}">
+        </div>`;
+    }
+    card.innerHTML=`
+      <div class="exercise-title">${ex.name}</div>
+      <div class="meta">${ex.goal} · Descanso sugerido: ${formatTime(ex.rest)}</div>
+      <div class="target">
+        🎯 Plan de hoy: <strong>${target.sets} series x ${target.reps}</strong> · RIR objetivo: <strong>${target.rir}</strong>
+      </div>
+      <div class="coach-box status-${decision.status}">
+        <strong>${decision.icon} Coach: ${decision.title}</strong>
+        <div class="coach-text">${decision.text}</div>
+      </div>
+      ${setRows}
+      <button class="blue" onclick="startTimer(${ex.rest})">Iniciar descanso de ${formatTime(ex.rest)}</button>
+    `;
+    exerciseContainer.appendChild(card);
+  });
+  bindSummary(); updateSummary(); renderDailyCoach(); renderPhase();
+}
+function bindSummary(){document.querySelectorAll("input").forEach(i=>i.addEventListener("input",updateSummary))}
+function updateSummary(){
+  const inputs=[...document.querySelectorAll("input[data-field]")];
+  let sets=0, volume=0;
+  const weights=inputs.filter(i=>i.dataset.field==="peso");
+  weights.forEach(w=>{
+    const reps=document.querySelector(`input[data-ex="${CSS.escape(w.dataset.ex)}"][data-set="${w.dataset.set}"][data-field="reps"]`);
+    const peso=parseFloat(w.value)||0, r=parseFloat(reps?.value)||0;
+    if(peso || r) sets++;
+    volume += peso*r;
+  });
+  document.getElementById("sumExercises").textContent=routine[daySelect.value].length;
+  document.getElementById("sumSets").textContent=sets;
+  document.getElementById("sumVolume").textContent=Math.round(volume)+" kg";
+}
+function formatTime(sec){let m=Math.floor(sec/60),s=sec%60;return `${m}:${String(s).padStart(2,"0")}`}
+function startTimer(sec){
+  stopTimer(false); remaining=sec; renderTimer();
+  timerInterval=setInterval(()=>{
+    remaining--; renderTimer();
+    if(remaining<=0){stopTimer(false); beep(); alert("Descanso terminado. Siguiente serie.");}
+  },1000);
+}
+function stopTimer(reset=true){if(timerInterval)clearInterval(timerInterval);timerInterval=null;if(reset){remaining=0;renderTimer()}}
+function renderTimer(){document.getElementById("timerDisplay").textContent=formatTime(Math.max(remaining,0))}
+function beep(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator(); const gain=ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination); osc.frequency.value=880; gain.gain.value=.08;
+    osc.start(); setTimeout(()=>{osc.stop();ctx.close()},350);
+  }catch(e){}
+}
+function collectWorkout(){
+  const selectedDay=daySelect.value, date=dateInput.value||todayISO(), week=parseInt(weekSelect.value);
+  return {
+    fecha:date, semana:week, dia:selectedDay,
+    ejercicios:routine[selectedDay].map(ex=>{
+      const target=planForWeek(week,ex);
+      const series=[];
+      for(let i=1;i<=target.sets;i++){
+        const get=f=>document.querySelector(`input[data-ex="${CSS.escape(ex.name)}"][data-set="${i}"][data-field="${f}"]`)?.value||"";
+        series.push({serie:i,peso:get("peso"),reps:get("reps"),rir:get("rir")});
+      }
+      return {ejercicio:ex.name, descanso:ex.rest, plan:`${target.sets}x${target.reps}`, rirObjetivo:target.rir, series};
+    })
+  };
+}
+function saveWorkout(){
+  const workout=collectWorkout();
+  const history=getHistory(); history.unshift(workout); setHistory(history);
+  renderExercises(); renderHistory(); alert("Entrenamiento guardado. El coach ajustará recomendaciones para la próxima sesión.");
+}
+function loadLastWorkout(){
+  const history=getHistory();
+  const last=history.find(h=>h.dia===daySelect.value);
+  if(!last){alert("No hay registro anterior para este día."); return;}
+  renderExercises(last);
+}
+function renderHistory(){
+  const history=getHistory(); historyContainer.innerHTML="";
+  if(!history.length){historyContainer.innerHTML='<div class="card" style="color:#94a3b8;text-align:center">Aún no tienes registros.</div>';return}
+  history.slice(0,12).forEach(item=>{
+    const div=document.createElement("div"); div.className="card";
+    const rows=item.ejercicios.map(e=>{
+      const total=e.series.reduce((a,s)=>a+((parseFloat(s.peso)||0)*(parseFloat(s.reps)||0)),0);
+      const simple=e.series.map(s=>`${s.peso||"—"}kg x ${s.reps||"—"}${s.rir?` (RIR ${s.rir})`:""}`).join(" | ");
+      return `<div class="history-row"><span>${e.ejercicio}</span><span>${simple}</span><span>${Math.round(total)} kg</span><span>Plan: ${e.plan||"—"} / RIR ${e.rirObjetivo||"—"}</span></div>`;
+    }).join("");
+    div.innerHTML=`<div class="history-head">${item.fecha} · Semana ${item.semana||"—"} · ${item.dia}</div>${rows}`;
+    historyContainer.appendChild(div);
+  });
+}
+function clearHistory(){if(confirm("¿Borrar todo el historial?")){localStorage.removeItem(coachKey);renderHistory();renderExercises()}}
+function exportCSV(){
+  const history=getHistory(); if(!history.length){alert("No hay datos.");return}
+  let csv="Fecha,Semana,Dia,Ejercicio,Plan,RIR Objetivo,Serie,Peso,Reps,RIR,Descanso\\n";
+  history.forEach(w=>w.ejercicios.forEach(e=>e.series.forEach(s=>{
+    csv+=`"${w.fecha}","${w.semana}","${w.dia}","${e.ejercicio}","${e.plan}","${e.rirObjetivo}","${s.serie}","${s.peso}","${s.reps}","${s.rir}","${e.descanso}"\\n`;
+  })));
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download="historial_hipertrofia_final.csv"; a.click(); URL.revokeObjectURL(url);
+}
+
+loadSelectors(); legacyMigrate(); dateInput.value=todayISO(); renderExercises(); renderHistory();
+weekSelect.addEventListener("change",()=>renderExercises());
+daySelect.addEventListener("change",()=>renderExercises());
 </script>
-
 </body>
 </html>
