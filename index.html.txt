@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini App Entrenamiento</title>
+  <style>
+    body { font-family: Arial; background: #111; color: white; padding: 20px; }
+    h1 { text-align: center; }
+    .card { background: #222; padding: 15px; margin: 10px 0; border-radius: 10px; }
+    input { padding: 8px; margin: 5px; border-radius: 5px; border: none; }
+    button { padding: 10px; background: #00c853; border: none; border-radius: 5px; color: white; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h1>Mini App Entrenamiento</h1>
+
+<select id="day">
+  <option>Lunes</option>
+  <option>Martes</option>
+  <option>Miércoles</option>
+  <option>Jueves</option>
+  <option>Viernes</option>
+</select>
+
+<div id="exercises"></div>
+
+<button onclick="save()">Guardar</button>
+
+<script>
+const routine = {
+  Lunes: ["Press banca", "Press inclinado", "Laterales", "Fondos", "Triceps"],
+  Martes: ["Sentadilla", "Prensa", "Zancadas", "Extensión", "Gemelos"],
+  Miércoles: ["Dominadas", "Remo", "Face pull", "Biceps"],
+  Jueves: ["Press máquina", "Jalón", "Remo", "Laterales", "Biceps + Triceps"],
+  Viernes: ["RDL", "Hip thrust", "Curl femoral", "Búlgara"]
+};
+
+const daySelect = document.getElementById("day");
+const container = document.getElementById("exercises");
+
+function render() {
+  container.innerHTML = "";
+  routine[daySelect.value].forEach(ex => {
+    container.innerHTML += `
+      <div class="card">
+        <strong>${ex}</strong><br>
+        <input placeholder="Peso (kg)">
+        <input placeholder="Reps">
+      </div>
+    `;
+  });
+}
+
+daySelect.onchange = render;
+render();
+
+function save() {
+  alert("Entrenamiento guardado (modo simple)");
+}
+</script>
+
+</body>
+</html>
