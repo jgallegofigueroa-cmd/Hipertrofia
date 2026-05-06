@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hipertrofia Pro</title>
+  <title>Hipertrofia Coach</title>
   <style>
     :root{
       --bg:#07111f; --panel:#0f172a; --panel2:#111827; --line:#334155;
       --text:#f8fafc; --muted:#94a3b8; --green:#22c55e; --blue:#38bdf8;
-      --yellow:#facc15; --red:#ef4444; --purple:#a78bfa;
+      --yellow:#facc15; --red:#ef4444; --purple:#a78bfa; --orange:#fb923c;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(145deg,#020617,#0f172a);color:var(--text);padding:14px}
-    .app{max-width:980px;margin:auto}
+    .app{max-width:1040px;margin:auto}
     h1{text-align:center;margin:8px 0 4px;font-size:30px}
     .sub{text-align:center;color:var(--muted);margin-bottom:18px}
     .grid{display:grid;gap:12px}
     .top{grid-template-columns:1fr 1fr}
     .card{background:rgba(15,23,42,.96);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 12px 28px rgba(0,0,0,.28)}
-    select,input,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid var(--line);background:#020617;color:var(--text);font-size:15px}
+    select,input{width:100%;padding:11px;border-radius:12px;border:1px solid var(--line);background:#020617;color:var(--text);font-size:15px}
     button{border:0;border-radius:14px;padding:12px 14px;color:white;font-weight:700;cursor:pointer;font-size:14px}
-    .green{background:var(--green)} .blue{background:#0284c7}.gray{background:#334155}.red{background:var(--red)}.purple{background:#7c3aed}
+    .green{background:var(--green)} .blue{background:#0284c7}.gray{background:#334155}.red{background:var(--red)}.purple{background:#7c3aed}.orange{background:#ea580c}
     .exercise-title{font-size:19px;font-weight:800;margin-bottom:5px}
     .meta{font-size:13px;color:var(--muted);margin-bottom:12px}
     .sets{display:grid;grid-template-columns:80px 1fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:8px}
@@ -30,23 +30,36 @@
     .time{font-size:34px;font-weight:900;color:var(--yellow);letter-spacing:1px}
     .timer-buttons{display:flex;gap:8px;flex-wrap:wrap}
     .actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
-    .history-row{display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr;gap:8px;padding:5px 0;border-bottom:1px solid rgba(148,163,184,.14);color:var(--muted);font-size:14px}
+    .history-row{display:grid;grid-template-columns:1.1fr 1.1fr .7fr .7fr;gap:8px;padding:5px 0;border-bottom:1px solid rgba(148,163,184,.14);color:var(--muted);font-size:14px}
     .history-head{font-weight:800;color:#bbf7d0;margin-bottom:8px}
     .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#1e293b;color:#cbd5e1;font-size:12px;margin-right:6px}
-    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
     .mini{background:#020617;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
     .mini strong{display:block;font-size:20px;color:var(--blue)}
+    .coach-box{border-radius:16px;padding:12px;margin:10px 0 14px;border:1px solid var(--line);background:#020617}
+    .coach-title{font-weight:900;margin-bottom:6px}
+    .coach-text{color:#cbd5e1;font-size:14px;line-height:1.35}
+    .status-up{border-color:rgba(34,197,94,.6);background:rgba(34,197,94,.08)}
+    .status-hold{border-color:rgba(250,204,21,.6);background:rgba(250,204,21,.08)}
+    .status-repeat{border-color:rgba(251,146,60,.6);background:rgba(251,146,60,.08)}
+    .status-down{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.08)}
+    .status-new{border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.08)}
+    .coach-panel{background:rgba(2,6,23,.96);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:14px}
+    .coach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .coach-card{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .coach-card strong{display:block;margin-bottom:5px}
     @media(max-width:760px){
-      .top,.actions,.summary{grid-template-columns:1fr}
+      .top,.actions,.summary,.coach-grid{grid-template-columns:1fr}
       .sets{grid-template-columns:1fr}
+      .history-row{grid-template-columns:1fr}
       h1{font-size:25px}.time{font-size:30px}
     }
   </style>
 </head>
 <body>
 <div class="app">
-  <h1>🏋️ Hipertrofia Pro</h1>
-  <p class="sub">Registro de peso, repeticiones, RIR y descanso</p>
+  <h1>🏋️ Hipertrofia Coach</h1>
+  <p class="sub">Registro + recomendaciones inteligentes de progresión</p>
 
   <div class="timer">
     <div class="timer-main">
@@ -75,6 +88,11 @@
     <div class="mini"><span>Volumen aprox.</span><strong id="sumVolume">0 kg</strong></div>
   </div>
 
+  <div class="coach-panel">
+    <h2 style="margin:0 0 10px">🧠 Coach del día</h2>
+    <div id="dailyCoach" class="coach-grid"></div>
+  </div>
+
   <div id="exerciseContainer"></div>
 
   <div class="actions">
@@ -91,42 +109,42 @@
 <script>
 const routine = {
   "Lunes - Push": [
-    {name:"Press banca", sets:4, rest:120, goal:"Fuerza base / progresión"},
-    {name:"Press inclinado", sets:3, rest:90, goal:"Hipertrofia pecho superior"},
-    {name:"Elevaciones laterales", sets:4, rest:60, goal:"Deltoide medio"},
-    {name:"Fondos", sets:3, rest:90, goal:"Pecho/tríceps"},
-    {name:"Extensión tríceps polea", sets:3, rest:60, goal:"Tríceps directo"}
+    {name:"Press banca", sets:4, rest:120, goal:"Fuerza base / progresión", repMin:5, repMax:8, type:"compound"},
+    {name:"Press inclinado", sets:3, rest:90, goal:"Hipertrofia pecho superior", repMin:8, repMax:10, type:"compound"},
+    {name:"Elevaciones laterales", sets:4, rest:60, goal:"Deltoide medio", repMin:12, repMax:15, type:"isolation"},
+    {name:"Fondos", sets:3, rest:90, goal:"Pecho/tríceps", repMin:8, repMax:10, type:"compound"},
+    {name:"Extensión tríceps polea", sets:3, rest:60, goal:"Tríceps directo", repMin:10, repMax:12, type:"isolation"}
   ],
   "Martes - Cuádriceps + Abdomen": [
-    {name:"Sentadilla", sets:4, rest:120, goal:"Cuádriceps / tensión mecánica"},
-    {name:"Prensa", sets:3, rest:90, goal:"Cuádriceps volumen"},
-    {name:"Zancadas", sets:3, rest:90, goal:"Unilateral"},
-    {name:"Extensión cuádriceps", sets:3, rest:60, goal:"Aislamiento"},
-    {name:"Gemelos", sets:4, rest:60, goal:"Pantorrilla"},
-    {name:"Cable crunch", sets:3, rest:60, goal:"Abdomen con carga"},
-    {name:"Dead bug", sets:2, rest:45, goal:"Core estabilidad"}
+    {name:"Sentadilla", sets:4, rest:120, goal:"Cuádriceps / tensión mecánica", repMin:5, repMax:8, type:"compound"},
+    {name:"Prensa", sets:3, rest:90, goal:"Cuádriceps volumen", repMin:8, repMax:10, type:"compound"},
+    {name:"Zancadas", sets:3, rest:90, goal:"Unilateral", repMin:10, repMax:12, type:"compound"},
+    {name:"Extensión cuádriceps", sets:3, rest:60, goal:"Aislamiento", repMin:12, repMax:15, type:"isolation"},
+    {name:"Gemelos", sets:4, rest:60, goal:"Pantorrilla", repMin:12, repMax:15, type:"isolation"},
+    {name:"Cable crunch", sets:3, rest:60, goal:"Abdomen con carga", repMin:12, repMax:15, type:"isolation"},
+    {name:"Dead bug", sets:2, rest:45, goal:"Core estabilidad", repMin:10, repMax:12, type:"core"}
   ],
   "Miércoles - Pull": [
-    {name:"Dominadas/Jalón", sets:4, rest:120, goal:"Espalda ancho"},
-    {name:"Remo", sets:4, rest:90, goal:"Espalda grosor"},
-    {name:"Face pull", sets:3, rest:60, goal:"Deltoide posterior/salud"},
-    {name:"Curl inclinado", sets:3, rest:60, goal:"Bíceps directo"}
+    {name:"Dominadas/Jalón", sets:4, rest:120, goal:"Espalda ancho", repMin:6, repMax:10, type:"compound"},
+    {name:"Remo", sets:4, rest:90, goal:"Espalda grosor", repMin:8, repMax:12, type:"compound"},
+    {name:"Face pull", sets:3, rest:60, goal:"Deltoide posterior/salud", repMin:12, repMax:15, type:"isolation"},
+    {name:"Curl inclinado", sets:3, rest:60, goal:"Bíceps directo", repMin:10, repMax:12, type:"isolation"}
   ],
   "Jueves - Torso + Abdomen": [
-    {name:"Press máquina", sets:3, rest:75, goal:"Pecho volumen"},
-    {name:"Jalón", sets:3, rest:75, goal:"Dorsal"},
-    {name:"Remo polea", sets:3, rest:75, goal:"Espalda media"},
-    {name:"Elevaciones laterales", sets:4, rest:60, goal:"Deltoide medio"},
-    {name:"Curl + tríceps", sets:3, rest:60, goal:"Superset brazos"},
-    {name:"Elevaciones piernas", sets:3, rest:60, goal:"Abdomen inferior"},
-    {name:"Crunch máquina", sets:3, rest:60, goal:"Abdomen con carga"},
-    {name:"Plancha", sets:2, rest:45, goal:"Core"}
+    {name:"Press máquina", sets:3, rest:75, goal:"Pecho volumen", repMin:10, repMax:12, type:"compound"},
+    {name:"Jalón", sets:3, rest:75, goal:"Dorsal", repMin:10, repMax:12, type:"compound"},
+    {name:"Remo polea", sets:3, rest:75, goal:"Espalda media", repMin:10, repMax:12, type:"compound"},
+    {name:"Elevaciones laterales", sets:4, rest:60, goal:"Deltoide medio", repMin:12, repMax:15, type:"isolation"},
+    {name:"Curl + tríceps", sets:3, rest:60, goal:"Superset brazos", repMin:12, repMax:15, type:"isolation"},
+    {name:"Elevaciones piernas", sets:3, rest:60, goal:"Abdomen inferior", repMin:10, repMax:15, type:"core"},
+    {name:"Crunch máquina", sets:3, rest:60, goal:"Abdomen con carga", repMin:12, repMax:15, type:"core"},
+    {name:"Plancha", sets:2, rest:45, goal:"Core", repMin:30, repMax:45, type:"core"}
   ],
   "Viernes - Femoral/Glúteo": [
-    {name:"RDL", sets:4, rest:120, goal:"Femoral / bisagra"},
-    {name:"Hip thrust", sets:4, rest:90, goal:"Glúteo"},
-    {name:"Curl femoral", sets:3, rest:60, goal:"Femoral aislamiento"},
-    {name:"Búlgara", sets:3, rest:90, goal:"Unilateral glúteo/pierna"}
+    {name:"RDL", sets:4, rest:120, goal:"Femoral / bisagra", repMin:5, repMax:8, type:"compound"},
+    {name:"Hip thrust", sets:4, rest:90, goal:"Glúteo", repMin:6, repMax:10, type:"compound"},
+    {name:"Curl femoral", sets:3, rest:60, goal:"Femoral aislamiento", repMin:10, repMax:12, type:"isolation"},
+    {name:"Búlgara", sets:3, rest:90, goal:"Unilateral glúteo/pierna", repMin:8, repMax:10, type:"compound"}
   ]
 };
 
@@ -135,11 +153,86 @@ let timerInterval=null, remaining=0;
 
 function todayISO(){return new Date().toISOString().split("T")[0]}
 function loadDays(){Object.keys(routine).forEach(day=>{let o=document.createElement("option");o.value=day;o.textContent=day;daySelect.appendChild(o)})}
+function getHistory(){return JSON.parse(localStorage.getItem("historialHipertrofiaCoach")||"[]")}
+function setHistory(h){localStorage.setItem("historialHipertrofiaCoach",JSON.stringify(h))}
+function legacyHistory(){return JSON.parse(localStorage.getItem("historialHipertrofiaPro")||"[]")}
+function migrateLegacy(){
+  if(getHistory().length===0 && legacyHistory().length>0){setHistory(legacyHistory())}
+}
+
+function getExerciseHistory(day, exerciseName){
+  return getHistory()
+    .filter(w=>w.dia===day)
+    .map(w=>({fecha:w.fecha, data:w.ejercicios.find(e=>e.ejercicio===exerciseName)}))
+    .filter(x=>x.data)
+    .slice(0,3);
+}
+
+function avg(nums){const clean=nums.filter(n=>!isNaN(n));return clean.length?clean.reduce((a,b)=>a+b,0)/clean.length:0}
+function totalVolume(ex){return ex.series.reduce((a,s)=>a+((parseFloat(s.peso)||0)*(parseFloat(s.reps)||0)),0)}
+function avgReps(ex){return avg(ex.series.map(s=>parseFloat(s.reps)))}
+function avgRir(ex){return avg(ex.series.map(s=>parseFloat(s.rir)).filter(n=>!isNaN(n)))}
+function topWeight(ex){return Math.max(...ex.series.map(s=>parseFloat(s.peso)||0),0)}
+function weightJump(type, current){
+  if(type==="isolation" || type==="core") return current < 30 ? 1 : 2.5;
+  if(current < 50) return 2.5;
+  if(current < 120) return 2.5;
+  return 5;
+}
+
+function coachDecision(day, exConfig){
+  const hist=getExerciseHistory(day, exConfig.name);
+  if(hist.length===0){
+    return {status:"new", icon:"🔵", title:"Primer registro", text:`Registra tu primera sesión. Rango objetivo: ${exConfig.repMin}-${exConfig.repMax} reps.`, suggestion:"Sin dato previo"};
+  }
+  const last=hist[0].data;
+  const prev=hist[1]?.data;
+  const lastAvgReps=avgReps(last), lastAvgRir=avgRir(last), lastWeight=topWeight(last), lastVol=totalVolume(last);
+  const prevAvgReps=prev?avgReps(prev):0, prevWeight=prev?topWeight(prev):0, prevVol=prev?totalVolume(prev):0;
+  const jump=weightJump(exConfig.type,lastWeight);
+  const hitTop=lastAvgReps >= exConfig.repMax;
+  const aboveMin=lastAvgReps >= exConfig.repMin;
+  const tooHard=lastAvgRir > 0 && lastAvgRir < 0.8;
+  const easy=lastAvgRir >= 2;
+  const improved = !prev || lastVol > prevVol || lastAvgReps > prevAvgReps || lastWeight > prevWeight;
+  const stalled = prev && !improved;
+
+  if(hitTop && easy){
+    return {status:"up", icon:"🟢", title:"Sube peso", text:`Completaste el rango alto con margen. Próxima sesión prueba ${lastWeight + jump} kg.`, suggestion:`${lastWeight + jump} kg`};
+  }
+  if(hitTop && lastAvgRir >= 1){
+    return {status:"up", icon:"🟢", title:"Subida moderada", text:`Cumpliste el rango objetivo. Sube poco: +${jump} kg si mantienes técnica limpia.`, suggestion:`${lastWeight + jump} kg`};
+  }
+  if(aboveMin && lastAvgRir >= 1 && improved){
+    return {status:"hold", icon:"🟡", title:"Mantén y consolida", text:`Vas progresando. Mantén ${lastWeight} kg e intenta sumar 1 rep total la próxima sesión.`, suggestion:`${lastWeight} kg`};
+  }
+  if(aboveMin && stalled){
+    return {status:"repeat", icon:"🟠", title:"Repite carga", text:`No hubo mejora clara. Repite ${lastWeight} kg, mejora descanso y ejecución antes de subir.`, suggestion:`${lastWeight} kg`};
+  }
+  if(!aboveMin || tooHard){
+    const lower = Math.max(0, lastWeight - jump);
+    return {status:"down", icon:"🔴", title:"Carga demasiado alta", text:`Las reps/RIR indican exceso de carga o fatiga. Baja a ${lower} kg o repite con más descanso.`, suggestion:`${lower} kg`};
+  }
+  return {status:"hold", icon:"🟡", title:"Mantén", text:`Mantén ${lastWeight} kg y busca mejor ejecución o más reps.`, suggestion:`${lastWeight} kg`};
+}
+
+function renderDailyCoach(){
+  const box=document.getElementById("dailyCoach"); box.innerHTML="";
+  const day=daySelect.value;
+  routine[day].forEach(ex=>{
+    const d=coachDecision(day,ex);
+    const card=document.createElement("div");
+    card.className=`coach-card status-${d.status}`;
+    card.innerHTML=`<strong>${d.icon} ${ex.name}</strong><div class="coach-text">${d.title}: ${d.text}</div><div class="meta">Sugerencia: ${d.suggestion}</div>`;
+    box.appendChild(card);
+  });
+}
 
 function renderExercises(prefill=null){
   const selectedDay=daySelect.value;
   exerciseContainer.innerHTML="";
-  routine[selectedDay].forEach((ex,idx)=>{
+  routine[selectedDay].forEach((ex)=>{
+    const decision=coachDecision(selectedDay,ex);
     const card=document.createElement("div"); card.className="card";
     let setRows="";
     for(let i=1;i<=ex.sets;i++){
@@ -154,14 +247,17 @@ function renderExercises(prefill=null){
     }
     card.innerHTML=`
       <div class="exercise-title">${ex.name}</div>
-      <div class="meta">${ex.goal} · Descanso sugerido: ${formatTime(ex.rest)}</div>
+      <div class="meta">${ex.goal} · Objetivo: ${ex.repMin}-${ex.repMax} reps · Descanso: ${formatTime(ex.rest)}</div>
+      <div class="coach-box status-${decision.status}">
+        <div class="coach-title">${decision.icon} Coach: ${decision.title}</div>
+        <div class="coach-text">${decision.text}</div>
+      </div>
       ${setRows}
       <button class="blue" onclick="startTimer(${ex.rest})">Iniciar descanso de ${formatTime(ex.rest)}</button>
     `;
     exerciseContainer.appendChild(card);
   });
-  bindSummary();
-  updateSummary();
+  bindSummary(); updateSummary(); renderDailyCoach();
 }
 
 function bindSummary(){document.querySelectorAll("input").forEach(i=>i.addEventListener("input",updateSummary))}
@@ -199,9 +295,6 @@ function beep(){
   }catch(e){}
 }
 
-function getHistory(){return JSON.parse(localStorage.getItem("historialHipertrofiaPro")||"[]")}
-function setHistory(h){localStorage.setItem("historialHipertrofiaPro",JSON.stringify(h))}
-
 function collectWorkout(){
   const selectedDay=daySelect.value, date=dateInput.value||todayISO();
   return {
@@ -220,7 +313,7 @@ function collectWorkout(){
 function saveWorkout(){
   const workout=collectWorkout();
   const history=getHistory(); history.unshift(workout); setHistory(history);
-  renderExercises(); renderHistory(); alert("Entrenamiento guardado.");
+  renderExercises(); renderHistory(); alert("Entrenamiento guardado. El coach actualizará recomendaciones para la próxima sesión.");
 }
 
 function loadLastWorkout(){
@@ -245,7 +338,7 @@ function renderHistory(){
   });
 }
 
-function clearHistory(){if(confirm("¿Borrar todo el historial?")){localStorage.removeItem("historialHipertrofiaPro");renderHistory()}}
+function clearHistory(){if(confirm("¿Borrar todo el historial?")){localStorage.removeItem("historialHipertrofiaCoach");localStorage.removeItem("historialHipertrofiaPro");renderHistory();renderExercises()}}
 function exportCSV(){
   const history=getHistory(); if(!history.length){alert("No hay datos.");return}
   let csv="Fecha,Dia,Ejercicio,Serie,Peso,Reps,RIR,Descanso\\n";
@@ -253,10 +346,10 @@ function exportCSV(){
     csv+=`"${w.fecha}","${w.dia}","${e.ejercicio}","${s.serie}","${s.peso}","${s.reps}","${s.rir}","${e.descanso}"\\n`;
   })));
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}); const url=URL.createObjectURL(blob);
-  const a=document.createElement("a"); a.href=url; a.download="historial_hipertrofia_pro.csv"; a.click(); URL.revokeObjectURL(url);
+  const a=document.createElement("a"); a.href=url; a.download="historial_hipertrofia_coach.csv"; a.click(); URL.revokeObjectURL(url);
 }
 
-loadDays(); dateInput.value=todayISO(); renderExercises(); renderHistory();
+loadDays(); migrateLegacy(); dateInput.value=todayISO(); renderExercises(); renderHistory();
 daySelect.addEventListener("change",()=>renderExercises());
 </script>
 </body>
